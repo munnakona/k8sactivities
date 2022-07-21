@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openmrs-pvc
+  labels:
+    app: openmrspvc
+  annotations:
+    kubernetes.io/change-cause: "version 1.0"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: openmrspvc
+  template:
+    metadata:
+      labels:
+        app: openmrspvc
+        version: v1.0
+    spec:
+      containers:
+        - image: practicek8s.jfrog.io/docker-practice-docker-local/openmrs:1.0
+          name: openmrspvc
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+        - name: artregcred        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openmrs-svc
+  labels:
+    job: lb
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: openmrspvc
+  type: LoadBalancer

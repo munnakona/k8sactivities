@@ -182,6 +182,13 @@ eksctl create nodegroup \
 kubectl get nodes
 
 
+git clone https://github.com/munnakona/k8sactivities.git
+
+kubectl apply -f aws-pvc.yaml
+
+
+
+
 
 
 
