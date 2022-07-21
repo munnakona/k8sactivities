@@ -123,6 +123,69 @@ eksctl create cluster --help
 eksctl create cluster --name demo-cluster --region us-east-1 --version 1.22 --vpc-private-subnets subnet-09c0e6ffe16f0b88b,subnet-0cc3781ec8e8ab2fd --node-volume-size 20 --ssh-pubic-key 'mylaptop' --without-nodegroup --auto-kubeconfig
 
 
+eksctl utils write-kubeconfig -c demo-cluster -r 'us-east-1'
+
+Step : 9  Cretae a node group
+---------------------------------
+Create node IAM role
+
+vi node-role-trust-relationship.json
+--------------------------------------
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+
+------------------------------------------------
+
+aws iam create-role \
+  --role-name AmazonEKSNodeRole \
+  --assume-role-policy-document file://"node-role-trust-relationship.json"
+
+
+aws iam attach-role-policy \
+  --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy \
+  --role-name AmazonEKSNodeRole
+aws iam attach-role-policy \
+  --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly \
+  --role-name AmazonEKSNodeRole
+
+
+  aws iam attach-role-policy \
+  --policy-arn arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy \
+  --role-name AmazonEKSNodeRole
+
+
+eksctl create nodegroup \
+  --cluster demo-cluster \
+  --region us-east-1 \
+  --name al-nodes \
+  --node-type t3.medium \
+  --nodes 2 \
+  --nodes-min 2 \
+  --nodes-max 4 \
+  --ssh-access \
+  --ssh-public-key mylaptop \
+  --node-private-networking
+
+
+
+kubectl get nodes
+
+
+
+
+
+
 
 
 
