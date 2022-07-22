@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: openmrs-rc
+  labels:
+    app: openmrs
+    ver: "1.0"
+spec:
+  replicas: 3
+  selector:
+    app: openmrs
+    ver: "1.0"
+  template:
+    metadata:
+      labels:
+        app: openmrs
+        ver: "1.0"
+    spec:
+      containers:
+        - name: openmrs
+          image: munna033/openmrs:1.0
+          ports:
+            - containerPort: 8080
+              protocol: TCP
