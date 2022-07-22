@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: openmrs
-          image: munnao33/openmrs:1.0
+          image: munna033/openmrs:1.0
           ports:
             - containerPort: 8080
               protocol: TCP
